@@ -1,0 +1,19 @@
+create PROCEDURE spud_product_UpdateDynamicId (
+in @from int = null, 
+in @start_with int = null )
+AS
+BEGIN
+	IF @from is NULL BEGIN
+    	set @start_with = 0
+        UPDATE product
+        	SET dynamic_id = @start_with
+        	SET @start_with = @start_with + 1
+        WHERE 1
+        RETURN
+    END
+    
+    update product
+    	set dynamic_id = @start_with
+        set @start_with = @start_with + 1
+    where dynamic_id >= @from
+END
