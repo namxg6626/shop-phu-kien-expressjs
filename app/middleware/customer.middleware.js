@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {
   findOneByEmail,
-  createNewCustomer,
+  insertNewCustomer,
 } = require("../model/customer.model");
 require("dotenv").config();
 
@@ -37,7 +37,7 @@ async function addNewCustomer(req, res, next) {
         message: "this email has existed",
       });
 
-    await createNewCustomer(phoneNumber, email, hashedPassword);
+    await insertNewCustomer(phoneNumber, email, hashedPassword);
     return res.status(201).json({
       status: 201,
       message: "registered",
@@ -82,7 +82,7 @@ function generateToken(req, res, next) {
     { id: customerInfo.id },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "15s",
+      expiresIn: "15m",
     }
   );
 
@@ -99,9 +99,24 @@ function generateToken(req, res, next) {
   next();
 }
 
+function verifyCustomerToken(req, res, next) {
+  const { token, refreshToken } = req.body;
+  try {
+    const { id } = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    req.idCustomer = id;
+    next();
+  } catch (err) {
+    return res.json({
+      status: 403,
+      message: "token expired",
+    });
+  }
+}
+
 module.exports = {
   validateCustomerInfo,
   addNewCustomer,
   authenticateCustomer,
   generateToken,
+  verifyCustomerToken,
 };

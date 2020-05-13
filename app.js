@@ -28,7 +28,6 @@ app.get(`/`, (req, res) => {
   const { id, limit } = req.query;
   let sql;
   id ? (sql = _SELECT_BY_ID + id) : (sql = _SELECT_ALL);
-
   con.query(sql, (err, result) => {
     if (limit) result = result.slice(0, limit);
     res.json(result);
