@@ -4,7 +4,7 @@ const Request = require("mssql/msnodesqlv8").Request;
 const db_config = {
   server: "DESKTOP-MKTAIV1",
   user: "DESKTOP-MKTAIV1\\namxg",
-  database: "shopnguyenxa",
+  database: "shopnguyenxa_test",
   port: 1433,
   driver: "msnodesqlv8",
   options: {

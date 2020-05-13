@@ -82,7 +82,7 @@ function generateToken(req, res, next) {
     { id: customerInfo.id },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "15m",
+      expiresIn: "15s",
     }
   );
 
@@ -113,10 +113,36 @@ function verifyCustomerToken(req, res, next) {
   }
 }
 
+function refreshCustomerToken(req, res, next) {
+  const refreshToken = req.body.refreshToken;
+  try {
+    req.customerInfo = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+  } catch (error) {
+    res.json({
+      status: 403,
+      message: "refresh token expired",
+    });
+  }
+  next();
+}
+
+function sendToken(req, res, next) {
+  res.json({
+    token: req.token,
+    refreshToken: req.refreshToken,
+  });
+  next();
+}
+
 module.exports = {
   validateCustomerInfo,
   addNewCustomer,
   authenticateCustomer,
   generateToken,
   verifyCustomerToken,
+  refreshCustomerToken,
+  sendToken,
 };
