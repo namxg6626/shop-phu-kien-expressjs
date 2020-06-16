@@ -120,13 +120,13 @@ function refreshCustomerToken(req, res, next) {
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
+    next();
   } catch (error) {
     res.json({
       status: 403,
       message: "refresh token expired",
     });
   }
-  next();
 }
 
 function sendToken(req, res, next) {
