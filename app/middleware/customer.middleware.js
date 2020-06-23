@@ -82,7 +82,7 @@ function generateToken(req, res, next) {
     { id: customerInfo.id },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "15s",
+      expiresIn: "2h",
     }
   );
 
@@ -106,7 +106,7 @@ function verifyCustomerToken(req, res, next) {
     req.idCustomer = id;
     next();
   } catch (err) {
-    return res.json({
+    return res.status(403).json({
       status: 403,
       message: "token expired",
     });
@@ -122,7 +122,7 @@ function refreshCustomerToken(req, res, next) {
     );
     next();
   } catch (error) {
-    res.json({
+    res.status(403).json({
       status: 403,
       message: "refresh token expired",
     });

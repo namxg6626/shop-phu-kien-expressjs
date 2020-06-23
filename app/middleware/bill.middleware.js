@@ -16,7 +16,7 @@ async function createNewCart(req, res, next) {
     console.error(err);
     return res.json({
       status: 500,
-      message: "internal server error",
+      message: "internal server error (in createNewCart middleware)",
     });
   }
 }
@@ -30,7 +30,7 @@ async function addItems(req, res, next) {
     console.log(err);
     return res.json({
       status: 500,
-      message: "internal server error",
+      message: "internal server error (in addItems middleware)",
     });
   }
 }
