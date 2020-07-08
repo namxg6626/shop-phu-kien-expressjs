@@ -1,7 +1,7 @@
 const { insertNewBill, insertItems } = require("../model/bill.model");
 const randomString = require("randomstring");
 
-async function createNewCart(req, res, next) {
+module.exports.createNewCart = async (req, res, next) => {
   const idCustomer = req.idCustomer;
   const total = req.body.total;
   req.idBill = randomString.generate({
@@ -19,9 +19,9 @@ async function createNewCart(req, res, next) {
       message: "internal server error (in createNewCart middleware)",
     });
   }
-}
+};
 
-async function addItems(req, res, next) {
+module.exports.addItems = async (req, res, next) => {
   const items = req.body.items;
   try {
     await insertItems(req.idBill, items);
@@ -33,9 +33,4 @@ async function addItems(req, res, next) {
       message: "internal server error (in addItems middleware)",
     });
   }
-}
-
-module.exports = {
-  createNewCart,
-  addItems,
 };

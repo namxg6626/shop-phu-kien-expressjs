@@ -6,7 +6,7 @@ const {
 } = require("../model/customer.model");
 require("dotenv").config();
 
-async function validateCustomerInfo(req, res, next) {
+module.exports.validateCustomerInfo = async (req, res, next) => {
   const { email, password, phoneNumber } = req.body;
 
   const regexPhoneNumber = /^[\d]{10,11}$/;
@@ -23,9 +23,9 @@ async function validateCustomerInfo(req, res, next) {
       status: 400,
       message: "invalid form",
     }); // bad request
-}
+};
 
-async function addNewCustomer(req, res, next) {
+module.exports.addNewCustomer = async (req, res, next) => {
   const { email, password, phoneNumber } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -38,10 +38,11 @@ async function addNewCustomer(req, res, next) {
       });
 
     await insertNewCustomer(phoneNumber, email, hashedPassword);
-    return res.status(201).json({
+    res.status(201).json({
       status: 201,
       message: "registered",
     });
+    next();
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -49,9 +50,9 @@ async function addNewCustomer(req, res, next) {
       message: "internal server error",
     });
   }
-}
+};
 
-async function authenticateCustomer(req, res, next) {
+module.exports.authenticateCustomer = async (req, res, next) => {
   const result = await findOneByEmail(req.body.email);
   const customerInfo = result[0];
 
@@ -73,9 +74,9 @@ async function authenticateCustomer(req, res, next) {
 
   req.customerInfo = customerInfo;
   next();
-}
+};
 
-function generateToken(req, res, next) {
+module.exports.generateToken = (req, res, next) => {
   const customerInfo = req.customerInfo;
 
   const token = jwt.sign(
@@ -97,9 +98,9 @@ function generateToken(req, res, next) {
   req.token = token;
   req.refreshToken = refreshToken;
   next();
-}
+};
 
-function verifyCustomerToken(req, res, next) {
+module.exports.verifyCustomerToken = (req, res, next) => {
   const { token, refreshToken } = req.body;
   try {
     const { id } = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -111,9 +112,9 @@ function verifyCustomerToken(req, res, next) {
       message: "token expired",
     });
   }
-}
+};
 
-function refreshCustomerToken(req, res, next) {
+module.exports.refreshCustomerToken = (req, res, next) => {
   const refreshToken = req.body.refreshToken;
   try {
     req.customerInfo = jwt.verify(
@@ -127,22 +128,12 @@ function refreshCustomerToken(req, res, next) {
       message: "refresh token expired",
     });
   }
-}
+};
 
-function sendToken(req, res, next) {
+module.exports.sendToken = (req, res, next) => {
   res.json({
     token: req.token,
     refreshToken: req.refreshToken,
   });
   next();
-}
-
-module.exports = {
-  validateCustomerInfo,
-  addNewCustomer,
-  authenticateCustomer,
-  generateToken,
-  verifyCustomerToken,
-  refreshCustomerToken,
-  sendToken,
 };
