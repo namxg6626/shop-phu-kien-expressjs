@@ -17,6 +17,9 @@ module.exports.validateCustomerInfo = async (req, res, next) => {
   const isCorrectEmail = regexEmail.test(email);
   const isCorrectPassword = regexPassword.test(password);
 
+  console.log(req.body);
+  console.log(isCorrectEmail, isCorrectPassword, isCorrectPhoneNumber);
+
   if (isCorrectPhoneNumber && isCorrectEmail && isCorrectPassword) next();
   else
     return res.status(400).json({

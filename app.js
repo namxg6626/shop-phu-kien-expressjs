@@ -14,4 +14,6 @@ require("./app/routes/customer.route")(app);
 require("./app/routes/product.route")(app);
 require("./app/routes/bill.route")(app);
 
-app.listen(8000);
+app.listen(8000, () => {
+  console.log("app is run at 8000");
+});

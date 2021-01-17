@@ -21,13 +21,20 @@ module.exports.getAllProduct = async (req, res, next) => {
 };
 
 module.exports.getProductsByPage = async (req, res, next) => {
-  const page = req.params.page;
-  const result = await selectProductsByPage(page);
-  res.status(200).json({
-    maxPage: result.maxPage,
-    products: result.products,
-  });
-  next();
+  try {
+    const page = req.params.page;
+    const result = await selectProductsByPage(page);
+    res.status(200).json({
+      maxPage: result.maxPage,
+      products: result.products,
+    });
+    next();
+  } catch (error) {
+    next(error);
+    res.status(500).json({
+      error: error,
+    });
+  }
 };
 
 module.exports.getProductById = async (req, res, next) => {
